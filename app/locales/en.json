@@ -1,0 +1,90 @@
+{
+  "common": {
+    "language": "Language",
+    "english": "English",
+    "kazakh": "Қазақша",
+    "searchPlaceholder": "Search products...",
+    "cart": "Cart",
+    "wishlist": "Wishlist",
+    "compare": "Compare",
+    "menu": "Menu",
+    "close": "Close"
+  },
+  "header": {
+    "catalog": "Catalog",
+    "services": "Services",
+    "brands": "Brands",
+    "about": "About",
+    "contacts": "Contacts",
+    "blog": "Blog"
+  },
+  "footer": {
+    "company": "Company",
+    "categories": "Categories",
+    "information": "Information",
+    "about": "About Us",
+    "contacts": "Contacts",
+    "privacyPolicy": "Privacy Policy",
+    "terms": "Terms & Conditions",
+    "followUs": "Follow Us",
+    "newsletter": "Newsletter",
+    "subscribeEmail": "Subscribe to our newsletter"
+  },
+  "products": {
+    "title": "Products",
+    "price": "Price",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock",
+    "onOrder": "On Order",
+    "description": "Description",
+    "specifications": "Specifications",
+    "quantity": "Quantity",
+    "addToCart": "Add to Cart",
+    "addToWishlist": "Add to Wishlist",
+    "compare": "Compare",
+    "reviews": "Reviews",
+    "rating": "Rating",
+    "highestPrice": "Highest Price",
+    "lowestPrice": "Lowest Price",
+    "newest": "Newest",
+    "popular": "Popular",
+    "noProducts": "No products found"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax",
+    "total": "Total",
+    "checkout": "Checkout",
+    "continueShopping": "Continue Shopping",
+    "removeItem": "Remove",
+    "updateQuantity": "Update Quantity"
+  },
+  "services": {
+    "title": "Services",
+    "description": "Our Services"
+  },
+  "about": {
+    "title": "About Us",
+    "description": "Learn more about us"
+  },
+  "contacts": {
+    "title": "Contacts",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "form": "Contact Form",
+    "name": "Name",
+    "message": "Message",
+    "send": "Send",
+    "submit": "Send",
+    "submitting": "Sending..."
+  },
+  "errors": {
+    "notFound": "Page not found",
+    "serverError": "Server error",
+    "unauthorized": "Unauthorized"
+  }
+}

@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+Disallow: /cart
+Disallow: /wishlist
+Disallow: /compare
+Disallow: /search
+Disallow: /api/
+Disallow: /admin/
+Disallow: /catalog/*?*
+
+Sitemap: https://www.medcoregroup.kz/sitemap_index.xml

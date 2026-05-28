@@ -1,0 +1,12 @@
+node_modules
+.nuxt
+.output
+.git
+.gitignore
+*.md
+Dockerfile
+.dockerignore
+.DS_Store
+.env
+.env.*
+!.env.example
