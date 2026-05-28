@@ -34,15 +34,65 @@ interface PageContent {
 const config = useRuntimeConfig()
 const ui = useUiStore()
 
+const DEFAULT_PAGE: PageContent = {
+  id: '',
+  slug: 'open-clinic',
+  title: 'Открыть клинику — MedCore Group',
+  h1: 'Откройте клинику с MedCore Group',
+  intro:
+    'Мы помогаем медицинским предпринимателям открывать клиники под ключ — от проектирования до полного оснащения оборудованием ведущих мировых брендов.',
+  steps: [
+    {
+      title: 'Консультация и анализ потребностей',
+      description:
+        'Обсуждаем профиль клиники, площадь, специализацию и бюджет. Формируем предварительный перечень оборудования.',
+    },
+    {
+      title: 'Подбор оборудования и коммерческое предложение',
+      description:
+        'Готовим детальное КП с ценами, сроками поставки и техническими характеристиками по каждой позиции.',
+    },
+    {
+      title: 'Поставка и монтаж',
+      description:
+        'Осуществляем доставку по всему Казахстану, проводим монтаж и пуско-наладочные работы сертифицированными инженерами.',
+    },
+    {
+      title: 'Обучение персонала и сервисная поддержка',
+      description:
+        'Проводим обучение сотрудников работе с оборудованием и обеспечиваем гарантийное и постгарантийное обслуживание.',
+    },
+  ],
+  faq: [
+    {
+      question: 'С чего начать открытие клиники?',
+      answer:
+        'Начните с консультации с нашим специалистом — мы поможем сформировать оптимальный перечень оборудования под ваш профиль и бюджет.',
+    },
+    {
+      question: 'Какие бренды оборудования вы поставляете?',
+      answer:
+        'Mindray, GE Healthcare, Philips, SonoScape, Draeger, Siemens Healthineers и другие ведущие мировые производители.',
+    },
+    {
+      question: 'Есть ли рассрочка или лизинг?',
+      answer:
+        'Да, мы работаем с ведущими лизинговыми компаниями Казахстана. Уточните условия у нашего менеджера.',
+    },
+  ],
+  isVisible: true,
+  seoTitle: 'Открыть клинику в Казахстане — оснащение под ключ | MedCore Group',
+  seoDescription:
+    'MedCore Group помогает открыть медицинскую клинику под ключ: подбор оборудования, поставка, монтаж и обучение персонала по всему Казахстану.',
+  seoKeywords: 'открыть клинику Казахстан, оснащение клиники, медицинское оборудование под ключ',
+}
+
 const { data: page } = await useAsyncData<PageContent>(
   'page-open-clinic',
-  () => $fetch(`${config.public.apiBase}/pages/open-clinic`),
-  { default: () => null as unknown as PageContent },
+  () =>
+    $fetch<PageContent>(`${config.public.apiBase}/pages/open-clinic`).catch(() => DEFAULT_PAGE),
+  { default: () => DEFAULT_PAGE },
 )
-
-if (!page.value) {
-  throw createError({ statusCode: 404, statusMessage: 'Page not found' })
-}
 
 const BASE = 'https://www.medcoregroup.kz'
 
