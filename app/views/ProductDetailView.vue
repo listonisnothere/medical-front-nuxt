@@ -399,10 +399,11 @@ await Promise.all([
   overflow: hidden;
   border: 1px solid var(--color-border);
 }
-.main-img img {
+.main-img :deep(img) {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  padding: 8px;
 }
 .badge {
   position: absolute;
@@ -434,10 +435,10 @@ await Promise.all([
 .thumbs button.active {
   border-color: var(--color-primary);
 }
-.thumbs img {
+.thumbs :deep(img) {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 .info {
   display: flex;

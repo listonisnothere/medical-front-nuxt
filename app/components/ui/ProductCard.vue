@@ -243,7 +243,7 @@ function openQuote() {
   transform: translateY(-3px);
 }
 
-.card:hover .media img {
+.card:hover .media :deep(img) {
   transform: scale(1.04);
 }
 
@@ -263,10 +263,10 @@ function openQuote() {
   overflow: hidden;
 }
 
-.media img {
+.media :deep(img) {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   transition: transform 0.4s ease;
 }
 
