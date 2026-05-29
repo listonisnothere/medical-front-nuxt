@@ -9,6 +9,7 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import { useMeta } from '@/composables/useMeta'
 import { useCatalogFilters } from '@/composables/useCatalogFilters'
 import { useCitiesDataStore } from '@/stores/citiesData'
+import { useSelectedCity } from '@/composables/useSelectedCity'
 import EquipmentQuiz from '@/components/quiz/EquipmentQuiz.vue'
 
 const route = useRoute()
@@ -24,6 +25,7 @@ const {
 } = useCatalogFilters()
 
 const citiesStore = useCitiesDataStore()
+const { selectedCity, selectedCitySlug } = useSelectedCity()
 
 function handleResize() {
   isDesktop.value = window.innerWidth > 900
@@ -106,7 +108,11 @@ await Promise.all([
       <Breadcrumbs
         :items="
           activeCategory
-            ? [{ label: $t('catalog.breadcrumb'), to: '/catalog' }, { label: currentTitle }]
+            ? [
+                { label: $t('catalog.breadcrumb'), to: '/catalog' },
+                { label: currentTitle, to: selectedCity ? `/catalog/${activeCategory}` : undefined },
+                ...(selectedCity ? [{ label: selectedCity.name, to: `/catalog/${activeCategory}/${selectedCitySlug}` }] : []),
+              ]
             : [{ label: $t('catalog.breadcrumb') }]
         "
       />
