@@ -10,9 +10,9 @@ import api from '@/composables/useApi'
 useMeta({
   title: () => 'Контакты',
   description: () =>
-    'Контакты ТОО «MedCore Group»: 070004, ВКО, г. Усть-Каменогорск, пр. Ауэзова, 14/1. Тел: +7 775 254 03 51. Email: MedCore_Group@mail.ru. Оставьте заявку — перезвоним!',
+    'Контакты ТОО «MedCore Group»: 070004, ВКО, г. Усть-Каменогорск, пр. Ауэзова, 14/1. Тел: +7 775 254 03 51. Email: info@medcoregroup.kz. Оставьте заявку — перезвоним!',
   keywords: () =>
-    'контакты MedCore Group, ТОО MedCore Group, БИН 250540020756, купить медоборудование Усть-Каменогорск, +7 775 254 03 51, MedCore_Group@mail.ru',
+    'контакты MedCore Group, ТОО MedCore Group, БИН 250540020756, купить медоборудование Усть-Каменогорск, +7 775 254 03 51, info@medcoregroup.kz',
   jsonLd: () => ({
     '@context': 'https://schema.org',
     '@graph': [
@@ -22,7 +22,7 @@ useMeta({
         alternateName: 'MedCore Group',
         taxID: '250540020756',
         telephone: '+77752540351',
-        email: 'MedCore_Group@mail.ru',
+        email: 'info@medcoregroup.kz',
         address: {
           '@type': 'PostalAddress',
           streetAddress: 'проспект Ауэзова, 14/1',
@@ -103,7 +103,7 @@ const submit = async (e: Event) => {
           </div>
           <div class="card">
             <h4>{{ $t('contacts.email') }}</h4>
-            <a href="mailto:MedCore_Group@mail.ru">MedCore_Group@mail.ru</a>
+            <a href="mailto:info@medcoregroup.kz">info@medcoregroup.kz</a>
           </div>
           <div class="card">
             <h4>{{ $t('contacts.workingHours') }}</h4>

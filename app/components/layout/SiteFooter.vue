@@ -106,9 +106,9 @@ const cols = computed(() => [
                 <svg viewBox="0 0 16 16" fill="none"><path d="M3 2h2.5l1 3-1.5 1.5a10 10 0 004.5 4.5L11 9.5l3 1V13a2 2 0 01-2 2A13 13 0 011 4a2 2 0 012-2z" stroke="currentColor" stroke-width="1.2"/></svg>
                 +7 775 254 03 51
               </a>
-              <a href="mailto:MedCore_Group@mail.ru">
+              <a href="mailto:info@medcoregroup.kz">
                 <svg viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M1 5l7 5 7-5" stroke="currentColor" stroke-width="1.2"/></svg>
-                MedCore_Group@mail.ru
+                info@medcoregroup.kz
               </a>
               <span class="addr">
                 <svg viewBox="0 0 16 16" fill="none"><path d="M8 1C5.8 1 4 2.8 4 5c0 3.3 4 9 4 9s4-5.7 4-9c0-2.2-1.8-4-4-4z" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="5" r="1.5" stroke="currentColor" stroke-width="1.2"/></svg>

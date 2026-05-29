@@ -108,7 +108,7 @@ const detailsMap = computed(() => tm('serviceDetail.detailsMap') as Record<strin
           <div class="contact-card">
             <h3>{{ $t('serviceDetail.contactTitle') }}</h3>
             <a href="tel:+77752540351" class="phone">+7 775 254 03 51</a>
-            <a href="mailto:MedCore_Group@mail.ru" class="email">MedCore_Group@mail.ru</a>
+            <a href="mailto:info@medcoregroup.kz" class="email">info@medcoregroup.kz</a>
             <p class="hours">{{ $t('serviceDetail.hours') }}</p>
           </div>
 

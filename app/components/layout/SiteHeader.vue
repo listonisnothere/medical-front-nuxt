@@ -86,7 +86,7 @@ const submitSearch = (e: Event) => {
           <CitySwitcher />
           <LanguageSwitcher />
           <a href="tel:+77752540351" class="phone">+7 775 254 03 51</a>
-          <a href="mailto:MedCore_Group@mail.ru" class="email">MedCore_Group@mail.ru</a>
+          <a href="mailto:info@medcoregroup.kz" class="email">info@medcoregroup.kz</a>
           <span class="hours">{{ $t('header.hours') }}</span>
         </div>
       </AppContainer>
