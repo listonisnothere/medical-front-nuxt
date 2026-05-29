@@ -4,10 +4,12 @@ import { RouterLink, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import AppContainer from '../ui/AppContainer.vue'
 import LanguageSwitcher from '../ui/LanguageSwitcher.vue'
+import CitySwitcher from './CitySwitcher.vue'
 import { useCartStore } from '@/stores/cart'
 import { useWishlistStore } from '@/stores/wishlist'
 import { useCompareStore } from '@/stores/compare'
 import { useCategoriesDataStore } from '@/stores/categoriesData'
+import { useSelectedCity } from '@/composables/useSelectedCity'
 
 interface NavItem {
   to: string
@@ -25,6 +27,7 @@ const cart = useCartStore()
 const wishlist = useWishlistStore()
 const compare = useCompareStore()
 const categoriesStore = useCategoriesDataStore()
+const { selectedCity, selectedCitySlug } = useSelectedCity()
 
 onMounted(() => {
   categoriesStore.load()
@@ -33,15 +36,21 @@ onMounted(() => {
   onUnmounted(() => window.removeEventListener('scroll', onScroll))
 })
 
+function catLink(slug: string) {
+  return selectedCity.value
+    ? `/catalog/${slug}/${selectedCitySlug.value}`
+    : `/catalog/${slug}`
+}
+
 const categoryNavItems = computed<NavItem[]>(() =>
   (categoriesStore.items as any[]).map((cat) => ({
-    to: `/catalog/${cat.slug}`,
+    to: catLink(cat.slug),
     label: cat.title,
     children: cat.children?.length
       ? [
-          { to: `/catalog/${cat.slug}`, label: t('header.allCategory') + cat.title },
+          { to: catLink(cat.slug), label: t('header.allCategory') + cat.title },
           ...cat.children.map((sub: any) => ({
-            to: `/catalog/${sub.slug}`,
+            to: catLink(sub.slug),
             label: sub.title,
           })),
         ]
@@ -71,6 +80,7 @@ const submitSearch = (e: Event) => {
     <div class="topbar">
       <AppContainer>
         <div class="topbar-row">
+          <CitySwitcher />
           <LanguageSwitcher />
           <a href="tel:+77752540351" class="phone">+7 775 254 03 51</a>
           <a href="mailto:MedCore_Group@mail.ru" class="email">MedCore_Group@mail.ru</a>

@@ -1,5 +1,14 @@
 export type ProductClass = 'Expert' | 'Высокий' | 'Базовый'
 
+export interface ProductCityAvailability {
+  cityId: string
+  cityName: string
+  cityNamePrep?: string
+  stockStatus: StockStatus
+  deliveryDays?: number | null
+  priceOverride?: number | null
+}
+
 export type StockStatus = 'in_stock' | 'on_order' | 'out_of_stock'
 export type PriceCurrency = 'KZT' | 'USD' | 'EUR'
 export type BadgeKey = 'hot' | 'new' | 'sale' | 'in-stock'
@@ -38,5 +47,7 @@ export interface Product {
   discountPercent?: number | null
   discountUntil?: string | null
   createdAt?: string
+  cityAvailability?: ProductCityAvailability | null
+  alternativeCities?: { cityId: string; citySlug: string; cityName: string; stockStatus: StockStatus; deliveryDays?: number | null }[]
 }
 

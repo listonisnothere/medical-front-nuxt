@@ -6,9 +6,12 @@ import AppContainer from '@/components/ui/AppContainer.vue'
 import SectionHeading from '@/components/ui/SectionHeading.vue'
 import ProductCard from '@/components/ui/ProductCard.vue'
 import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
+import CityDeliveryBanner from '@/components/ui/CityDeliveryBanner.vue'
 import { useMeta, type FaqItem } from '@/composables/useMeta'
 import { useCatalogFilters } from '@/composables/useCatalogFilters'
 import { useCitiesDataStore } from '@/stores/citiesData'
+import { buildCitySeoFallback } from '@/composables/useCitySeoFallback'
+import { mergeSeo } from '@/utils/mergeSeo'
 
 const route = useRoute()
 const { t } = useI18n()
@@ -24,11 +27,10 @@ const {
 
 const citiesStore = useCitiesDataStore()
 const config = useRuntimeConfig()
-const citySlug = route.params.city as string
+const citySlug = (route.params.city as string).toLowerCase()
 
-// Load stores and SEO in parallel
+// Load stores in parallel, then load products for specific city
 await Promise.all([
-  useAsyncData('productsData', () => productsStore.load()),
   useAsyncData('categoriesData', () => categoriesStore.load()),
   useAsyncData('brandsData', () => brandsStore.load()),
   useAsyncData('citiesData', () => citiesStore.load()),
@@ -40,14 +42,40 @@ if (!city.value) {
   throw createError({ statusCode: 404, statusMessage: 'City not found' })
 }
 
-// Fetch merged SEO from backend
+// Load products for city (uses city-specific endpoint)
+const { data: cityProductsData } = await useAsyncData(
+  `products-city-${citySlug}`,
+  () => productsStore.loadForCity(citySlug),
+)
+// Override sorted products with city-specific ones
+if (cityProductsData.value?.length) {
+  productsStore.items = cityProductsData.value
+}
+
+// Fetch SEO from backend (now always 200, may return empty fields)
 const { data: seoData } = await useAsyncData(
   `catalog-seo-${activeCategory.value}-${citySlug}`,
   () => $fetch<{
     category: { slug: string; title: string; short?: string; faq: FaqItem[] }
     city: { slug: string; name: string; namePrep: string; region: string; faq: FaqItem[] }
     seo: { title: string; description: string; keywords: string; faq: FaqItem[] }
-  }>(`${config.public.apiBase}/catalog-seo/${activeCategory.value}/${citySlug}`),
+  }>(`${config.public.apiBase}/catalog-seo/${activeCategory.value}/${citySlug}`).catch(() => null),
+)
+
+// Merge backend SEO with client-side fallback (fallback fills empty fields)
+const mergedSeo = computed(() => {
+  const c = city.value
+  if (!c) return { title: '', description: '', keywords: '', faq: [] as FaqItem[] }
+  const fallback = buildCitySeoFallback(currentTitle.value || 'Медицинское оборудование', c)
+  return mergeSeo(fallback, seoData.value?.seo)
+})
+
+// Related categories for the same city (exclude current)
+const relatedCategoryLinks = computed(() =>
+  categoriesStore.items
+    .filter((c: any) => c.isVisible && c.slug !== activeCategory.value)
+    .slice(0, 6)
+    .map((c: any) => ({ slug: c.slug, title: c.title, to: `/catalog/${c.slug}/${citySlug}` })),
 )
 
 function handleResize() {
@@ -66,11 +94,11 @@ onUnmounted(() => {
 })
 
 useMeta({
-  title: () => seoData.value?.seo.title ?? `${currentTitle.value} — купить ${city.value?.namePrep ?? ''}`,
-  description: () => seoData.value?.seo.description ?? '',
-  keywords: () => seoData.value?.seo.keywords ?? '',
+  title: () => mergedSeo.value.title,
+  description: () => mergedSeo.value.description,
+  keywords: () => mergedSeo.value.keywords,
   canonical: () => `https://www.medcoregroup.kz/catalog/${activeCategory.value}/${citySlug}`,
-  faqItems: () => seoData.value?.seo.faq ?? [],
+  faqItems: () => mergedSeo.value.faq,
   jsonLd: () => {
     const catTitle = currentTitle.value
     const cityName = city.value?.name ?? ''
@@ -95,13 +123,23 @@ useMeta({
       : null
     const service = {
       '@type': 'Service',
-      name: catTitle,
+      name: `${catTitle} ${city.value?.namePrep ?? ''}`,
       provider: { '@type': 'Organization', name: 'MedCore Group' },
       areaServed: { '@type': 'City', name: cityName },
     }
+    const faqPage = mergedSeo.value.faq.length
+      ? {
+          '@type': 'FAQPage',
+          mainEntity: mergedSeo.value.faq.map((f) => ({
+            '@type': 'Question',
+            name: f.question,
+            acceptedAnswer: { '@type': 'Answer', text: f.answer },
+          })),
+        }
+      : null
     return {
       '@context': 'https://schema.org',
-      '@graph': [breadcrumb, service, ...(itemList ? [itemList] : [])],
+      '@graph': [breadcrumb, service, ...(itemList ? [itemList] : []), ...(faqPage ? [faqPage] : [])],
     }
   },
 })
@@ -117,7 +155,10 @@ useMeta({
           { label: city?.name ?? citySlug },
         ]"
       />
-      <SectionHeading :eyebrow="city?.name" :level="1">{{ currentTitle }}</SectionHeading>
+      <SectionHeading :eyebrow="`MedCore Group · ${city?.name ?? ''}`" :level="1">
+        {{ currentTitle }} в {{ city?.name ?? '' }}
+      </SectionHeading>
+      <CityDeliveryBanner v-if="city" :city="city" />
 
       <div class="search-wrap">
         <span class="search-icon-glyph">&#128269;</span>
@@ -272,16 +313,30 @@ useMeta({
             </RouterLink>
           </div>
 
-          <div v-if="seoData?.seo.faq.length" class="faq-section">
+          <div v-if="mergedSeo.faq.length" class="faq-section">
             <h2 class="faq-heading">Частые вопросы</h2>
             <details
-              v-for="(item, i) in seoData.seo.faq"
+              v-for="(item, i) in mergedSeo.faq"
               :key="i"
               class="faq-item"
             >
               <summary class="faq-question">{{ item.question }}</summary>
               <p class="faq-answer">{{ item.answer }}</p>
             </details>
+          </div>
+
+          <div v-if="relatedCategoryLinks.length" class="related-cities-section">
+            <h2 class="related-heading">Другие категории в {{ city?.name }}</h2>
+            <div class="related-grid">
+              <RouterLink
+                v-for="cat in relatedCategoryLinks"
+                :key="cat.slug"
+                :to="cat.to"
+                class="related-card"
+              >
+                {{ cat.title }}
+              </RouterLink>
+            </div>
           </div>
         </div>
       </div>
@@ -749,5 +804,41 @@ details[open] .faq-question::after { content: '−'; }
   color: var(--color-text-muted);
   line-height: 1.6;
   margin: 0;
+}
+
+/* RELATED CATEGORIES */
+.related-cities-section {
+  margin-top: var(--space-7);
+}
+
+.related-heading {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 var(--space-4);
+  color: var(--color-text);
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--space-3);
+}
+
+.related-card {
+  padding: 12px 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--color-text);
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.related-card:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
 }
 </style>

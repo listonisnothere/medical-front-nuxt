@@ -38,9 +38,9 @@ export default defineEventHandler(async () => {
 
     for (const cat of cats) {
       if (!cat.slug) continue
-      urls.push({ loc: `/catalog/${cat.slug}`, priority: 0.8, changefreq: 'weekly' })
+      urls.push({ loc: `/catalog/${cat.slug.toLowerCase()}`, priority: 0.8, changefreq: 'weekly' })
       for (const city of visibleCities) {
-        urls.push({ loc: `/catalog/${cat.slug}/${city.slug}`, priority: 0.7, changefreq: 'monthly' })
+        urls.push({ loc: `/catalog/${cat.slug.toLowerCase()}/${city.slug.toLowerCase()}`, priority: 0.7, changefreq: 'monthly' })
       }
     }
 
