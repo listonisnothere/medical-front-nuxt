@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import type { Product } from '@/data/products'
@@ -9,6 +9,12 @@ import { useUiStore } from '@/stores/ui'
 const props = defineProps<{ product: Product }>()
 
 const { t, locale } = useI18n()
+
+const imageSrc = ref(props.product.image || '/img/product-placeholder.svg')
+
+function onImgError() {
+  imageSrc.value = '/img/product-placeholder.svg'
+}
 const wishlist = useWishlistStore()
 const ui = useUiStore()
 
@@ -119,7 +125,7 @@ function openQuote() {
   <article class="card">
     <RouterLink :to="`/product/${product.id}`" class="media">
       <NuxtImg
-        :src="product.image"
+        :src="imageSrc"
         :alt="`${product.name} — ${product.brand} купить в Казахстане`"
         loading="lazy"
         decoding="async"
@@ -128,13 +134,14 @@ function openQuote() {
         width="400"
         height="300"
         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        @error="onImgError"
       />
 
       <span v-if="resolvedBadge" class="badge" :class="resolvedBadge.className">
         {{ resolvedBadge.text }}
       </span>
 
-      <span class="class-chip">{{ product.productClass }}</span>
+      <span v-if="product.productClass" class="class-chip">{{ product.productClass }}</span>
 
       <button
         type="button"
@@ -282,9 +289,8 @@ function openQuote() {
 
 .class-chip {
   position: absolute;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 10px;
+  left: 12px;
   font-size: 10px;
   font-weight: 600;
   padding: 4px 9px;

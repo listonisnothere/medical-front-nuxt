@@ -201,15 +201,15 @@ useMeta({
   margin-top: var(--space-7);
   display: flex;
   flex-direction: column;
-  gap: var(--space-10);
+  gap: var(--space-8);
 }
 
 /* Hero */
 .hero {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
-  padding: var(--space-10) var(--space-8);
+  gap: var(--space-5);
+  padding: var(--space-8) var(--space-7);
   background: var(--color-surface, #f8f7f4);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
@@ -287,13 +287,19 @@ useMeta({
 }
 
 /* Steps */
+.steps-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
 .steps-list {
   list-style: none;
   padding: 0;
-  margin: var(--space-5) 0 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-4);
   counter-reset: none;
 }
 
@@ -373,7 +379,7 @@ useMeta({
   align-items: center;
   justify-content: space-between;
   gap: var(--space-6);
-  padding: var(--space-8) var(--space-9);
+  padding: var(--space-7) var(--space-8);
   background: linear-gradient(135deg, #1a3a6b 0%, #0f6bbd 100%);
   border-radius: var(--radius-lg);
   flex-wrap: wrap;
@@ -413,13 +419,14 @@ useMeta({
 .faq-section {
   display: flex;
   flex-direction: column;
+  gap: var(--space-5);
 }
 
 .faq-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  margin-top: var(--space-5);
+  gap: var(--space-3);
+  margin-top: 0;
 }
 
 .faq-item {
@@ -469,5 +476,17 @@ useMeta({
   line-height: 1.7;
   color: var(--color-text-muted);
   margin: 0;
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: var(--space-6) var(--space-5);
+  }
+
+  .cta-card {
+    padding: var(--space-6);
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 </style>

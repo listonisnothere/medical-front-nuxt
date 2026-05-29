@@ -74,6 +74,9 @@
     "testimonialsEyebrow": "Пікірлер",
     "testimonialsTitle": "Клиенттер не дейді",
     "popularTitle": "Танымал медтехника",
+    "openClinicTitle": "Клиника ашып жатырсыз ба?",
+    "openClinicSub": "Профильге және бюджетке сай жабдықты іріктейміз — 24 сағат ішінде есептеу",
+    "openClinicCta": "Толығырақ білу",
     "blogEyebrow": "Блог",
     "blogTitle": "Соңғы жарияланымдар",
     "trustEyebrow": "Сенімді серіктестер",
@@ -236,7 +239,17 @@
     "onOrder": "Тапсырыс бойынша",
     "clear": "Тазалау",
     "empty": "Каталогтан салыстыруға өнімдер қосыңыз.",
-    "toCatalog": "Каталогқа"
+    "toCatalog": "Каталогқа",
+    "aiCompare": "AI көмегімен салыстыру",
+    "aiCompareNeedTwo": "AI салыстыруы үшін дәл 2 өнім таңдаңыз",
+    "aiLoading": "Сипаттамаларды талдауда…",
+    "aiVerdict": "Қорытынды",
+    "aiWhenChoose": "{name} таңдау керек болғанда",
+    "aiRegenerate": "Қайта жасау",
+    "aiCached": "Кэштен",
+    "aiRequestQuote": "{name} үшін КП сұрату",
+    "aiError": "Салыстыру мүмкін болмады. Кейінірек көріңіз.",
+    "aiTitle": "AI-салыстыру"
   },
   "search": {
     "breadcrumb": "Іздеу",

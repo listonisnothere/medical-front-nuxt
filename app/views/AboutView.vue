@@ -9,7 +9,7 @@ import { useBrandsDataStore } from '@/stores/brandsData'
 import { useMeta } from '@/composables/useMeta'
 
 const brandsStore = useBrandsDataStore()
-const partners = computed(() => brandsStore.items.map((b: { name: string }) => b.name))
+const partners = computed(() => brandsStore.items.map((b: { name: string; slug: string }) => ({ name: b.name, slug: b.slug })))
 
 useMeta({
   title: () => 'О компании',
@@ -85,7 +85,7 @@ await useAsyncData('brandsData', () => brandsStore.load())
         <h2 class="section-title">{{ $t('about.partnersTitle') }}</h2>
         <p class="section-lead">{{ $t('about.partnersLead') }}</p>
         <div class="chips">
-          <span v-for="p in partners" :key="p" class="chip">{{ p }}</span>
+          <span v-for="p in partners" :key="p.name" class="chip">{{ p.name }}</span>
         </div>
       </section>
 

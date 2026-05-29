@@ -22,7 +22,7 @@ const brandsStore = useBrandsDataStore()
 const bannersStore = useBannersDataStore()
 const popular = computed(() => productsStore.items.slice(0, 8))
 const brandNames = computed(() =>
-  brandsStore.items.slice(0, 8).map((b: { name: string }) => b.name),
+  brandsStore.items.slice(0, 8).map((b: { name: string; slug: string }) => ({ name: b.name, slug: b.slug })),
 )
 
 useMeta({
@@ -119,6 +119,21 @@ await Promise.all([
       <WhyUsBlock />
     </section>
 
+    <section class="block open-clinic-cta">
+      <div class="oc-card">
+        <div class="oc-text">
+          <h2 class="oc-title">{{ $t('home.openClinicTitle') }}</h2>
+          <p class="oc-sub">{{ $t('home.openClinicSub') }}</p>
+        </div>
+        <RouterLink to="/open-clinic" class="oc-btn">
+          {{ $t('home.openClinicCta') }}
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" width="14" height="14">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </RouterLink>
+      </div>
+    </section>
+
     <section v-if="brandNames.length" class="block">
       <SectionHeading align="center" :eyebrow="$t('home.partnersEyebrow')">
         {{ $t('home.partnersTitle') }}
@@ -194,5 +209,58 @@ await Promise.all([
 }
 .more-link:hover svg {
   transform: translateX(3px);
+}
+
+/* Open clinic CTA */
+.oc-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  padding: var(--space-7) var(--space-8);
+  background: linear-gradient(135deg, #1a3a6b 0%, #0f6bbd 100%);
+  border-radius: var(--radius-lg);
+  flex-wrap: wrap;
+}
+.oc-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.oc-title {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 2.5vw, 26px);
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+.oc-sub {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0;
+}
+.oc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 14px 28px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  background: #fff;
+  color: var(--color-primary);
+  transition: filter 0.15s;
+}
+.oc-btn:hover {
+  filter: brightness(0.95);
+}
+@media (max-width: 640px) {
+  .oc-card {
+    padding: var(--space-6);
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 </style>

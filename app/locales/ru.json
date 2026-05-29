@@ -74,6 +74,9 @@
     "testimonialsEyebrow": "Отзывы",
     "testimonialsTitle": "Что говорят клиенты",
     "popularTitle": "Популярная медтехника",
+    "openClinicTitle": "Открываете клинику?",
+    "openClinicSub": "Подберём оборудование под профиль и бюджет — расчёт за 24 часа",
+    "openClinicCta": "Узнать больше",
     "blogEyebrow": "Блог",
     "blogTitle": "Последние публикации",
     "trustEyebrow": "Партнёры по доверию",
@@ -236,7 +239,17 @@
     "onOrder": "Под заказ",
     "clear": "Очистить",
     "empty": "Добавьте товары к сравнению из каталога.",
-    "toCatalog": "В каталог"
+    "toCatalog": "В каталог",
+    "aiCompare": "Сравнить с помощью AI",
+    "aiCompareNeedTwo": "Выберите ровно 2 товара для AI-сравнения",
+    "aiLoading": "Анализируем характеристики…",
+    "aiVerdict": "Вердикт",
+    "aiWhenChoose": "Когда выбрать {name}",
+    "aiRegenerate": "Сгенерировать заново",
+    "aiCached": "Из кэша",
+    "aiRequestQuote": "Запросить КП на {name}",
+    "aiError": "Не удалось сравнить. Попробуйте позже.",
+    "aiTitle": "AI-сравнение"
   },
   "search": {
     "breadcrumb": "Поиск",

@@ -1,12 +1,21 @@
 <script setup lang="ts">
-defineProps<{ items: string[] }>()
+defineProps<{ items: { name: string; slug?: string }[] }>()
 </script>
 
 <template>
   <div class="strip">
-    <div v-for="item in items" :key="item" class="logo-tile">
-      <span>{{ item }}</span>
-    </div>
+    <template v-for="item in items" :key="item.name">
+      <RouterLink
+        v-if="item.slug"
+        :to="`/brands/${item.slug}`"
+        class="logo-tile logo-tile--link"
+      >
+        <span>{{ item.name }}</span>
+      </RouterLink>
+      <div v-else class="logo-tile">
+        <span>{{ item.name }}</span>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -32,6 +41,11 @@ defineProps<{ items: string[] }>()
   letter-spacing: 0.02em;
   text-align: center;
   transition: color 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.logo-tile--link {
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .logo-tile:hover {
