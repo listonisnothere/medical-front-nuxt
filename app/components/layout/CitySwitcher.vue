@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useCitiesDataStore } from '@/stores/citiesData'
 import { useSelectedCity } from '@/composables/useSelectedCity'
 
@@ -7,6 +7,8 @@ const citiesStore = useCitiesDataStore()
 const { selectedCity, setSelectedCity } = useSelectedCity()
 
 const open = ref(false)
+
+onMounted(() => citiesStore.load())
 
 const visibleCities = computed(() =>
   citiesStore.items.filter((c) => c.isVisible).sort((a, b) => a.sortOrder - b.sortOrder),

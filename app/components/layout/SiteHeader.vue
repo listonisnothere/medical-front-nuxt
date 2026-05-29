@@ -9,6 +9,7 @@ import { useCartStore } from '@/stores/cart'
 import { useWishlistStore } from '@/stores/wishlist'
 import { useCompareStore } from '@/stores/compare'
 import { useCategoriesDataStore } from '@/stores/categoriesData'
+import { useCitiesDataStore } from '@/stores/citiesData'
 import { useSelectedCity } from '@/composables/useSelectedCity'
 
 interface NavItem {
@@ -27,10 +28,12 @@ const cart = useCartStore()
 const wishlist = useWishlistStore()
 const compare = useCompareStore()
 const categoriesStore = useCategoriesDataStore()
+const citiesStore = useCitiesDataStore()
 const { selectedCity, selectedCitySlug } = useSelectedCity()
 
 onMounted(() => {
   categoriesStore.load()
+  citiesStore.load()
   const onScroll = () => { scrolled.value = window.scrollY > 12 }
   window.addEventListener('scroll', onScroll, { passive: true })
   onUnmounted(() => window.removeEventListener('scroll', onScroll))

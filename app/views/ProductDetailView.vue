@@ -14,6 +14,7 @@ import { useCompareStore } from '@/stores/compare'
 import { useCartStore } from '@/stores/cart'
 import { useUiStore } from '@/stores/ui'
 import { useMeta, buildProductTitle } from '@/composables/useMeta'
+import { useSelectedCity } from '@/composables/useSelectedCity'
 
 const route = useRoute()
 const { t } = useI18n()
@@ -23,8 +24,37 @@ const cart = useCartStore()
 const ui = useUiStore()
 const productsStore = useProductsDataStore()
 const categoriesStore = useCategoriesDataStore()
+const config = useRuntimeConfig()
+const { selectedCity, selectedCitySlug } = useSelectedCity()
 
-const product = computed(() => productsStore.items.find((p) => p.id === route.params.id))
+// City-specific product data (availability overlay)
+const { data: cityProduct } = await useAsyncData(
+  `product-city-${route.params.id}-${selectedCitySlug.value}`,
+  async () => {
+    if (!selectedCitySlug.value) return null
+    return $fetch<any>(
+      `${config.public.apiBase}/products/${route.params.id}?city=${selectedCitySlug.value}`,
+    ).catch(() => null)
+  },
+  { watch: [selectedCitySlug] },
+)
+
+const product = computed(() => cityProduct.value ?? productsStore.items.find((p) => p.id === route.params.id))
+
+// City availability badge
+const cityAvail = computed(() => cityProduct.value?.cityAvailability ?? null)
+const alternativeCities = computed(() => cityProduct.value?.alternativeCities ?? [])
+
+const stockStatusLabel: Record<string, string> = {
+  in_stock: 'В наличии',
+  on_order: 'Под заказ',
+  out_of_stock: 'Нет в наличии',
+}
+const stockStatusColor: Record<string, string> = {
+  in_stock: '#059669',
+  on_order: '#d97706',
+  out_of_stock: '#9ca3af',
+}
 
 const stripMd = (s: string) =>
   s.replace(/[#*_`>~\-]/g, '').replace(/\s+/g, ' ').trim()
@@ -231,6 +261,31 @@ await Promise.all([
           <p class="price-note">{{ $t('product.priceNote') }}</p>
         </div>
 
+        <!-- City availability -->
+        <div v-if="cityAvail" class="city-avail-block">
+          <span
+            class="city-avail-badge"
+            :style="{ background: stockStatusColor[cityAvail.stockStatus] + '18', color: stockStatusColor[cityAvail.stockStatus], borderColor: stockStatusColor[cityAvail.stockStatus] + '44' }"
+          >
+            {{ stockStatusLabel[cityAvail.stockStatus] ?? cityAvail.stockStatus }}
+            <template v-if="cityAvail.deliveryDays"> · {{ cityAvail.deliveryDays }} дн.</template>
+          </span>
+          <span class="city-avail-city">{{ cityAvail.cityName }}</span>
+        </div>
+
+        <!-- Alternative cities if out of stock -->
+        <div v-if="cityAvail?.stockStatus === 'out_of_stock' && alternativeCities.length" class="alt-cities">
+          <span class="alt-cities-label">Доступно в:</span>
+          <RouterLink
+            v-for="c in alternativeCities"
+            :key="c.cityId"
+            :to="`/catalog/${product.category}/${c.citySlug}`"
+            class="alt-city-link"
+          >
+            {{ c.cityName }}<template v-if="c.deliveryDays"> ({{ c.deliveryDays }} дн.)</template>
+          </RouterLink>
+        </div>
+
         <div class="actions">
           <BaseButton variant="primary" size="lg" @click="ui.openQuote(product)">
             {{ $t('product.requestQuote') }}
@@ -420,6 +475,41 @@ h1 {
   margin-top: var(--space-2);
   font-size: 13px;
   color: var(--color-text-muted);
+}
+.city-avail-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: -4px;
+}
+.city-avail-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+.city-avail-city {
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}
+.alt-cities {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+.alt-cities-label {
+  color: var(--color-text-muted);
+}
+.alt-city-link {
+  color: var(--color-primary);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 .actions {
   display: flex;
