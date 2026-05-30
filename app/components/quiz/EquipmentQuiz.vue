@@ -517,6 +517,7 @@ const answerSummary = computed(() => {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: var(--space-4);
+  align-items: start;
 }
 
 .result-empty {
