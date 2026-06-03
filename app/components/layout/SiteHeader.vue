@@ -96,23 +96,14 @@ const submitSearch = (e: Event) => {
       <AppContainer>
         <div class="main-row">
           <RouterLink to="/" class="logo" :aria-label="$t('header.logoAriaLabel')">
-            <svg
-              class="logo-mark"
-              viewBox="0 0 56 56"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <rect width="56" height="56" rx="10" fill="#1a4f9c" />
-              <path
-                d="M11 39V17h5l6 13 6-13h5v22h-4V25l-5 11h-4l-5-11v14h-4z"
-                fill="#fff"
-              />
-              <circle cx="44" cy="20" r="4" fill="#c8881a" />
-            </svg>
-            <div class="logo-text-wrap">
-              <span class="logo-name">MedCore Group</span>
-              <span class="logo-sub">{{ $t('header.logoSub') }}</span>
-            </div>
+            <NuxtImg
+              src="~/assets/images/og-logo.png"
+              alt="MedCore Group"
+              format="webp"
+              width="160"
+              height="107"
+              loading="eager"
+            />
           </RouterLink>
 
           <form class="search" role="search" @submit="submitSearch">
@@ -255,32 +246,11 @@ const submitSearch = (e: Event) => {
   gap: var(--space-3);
 }
 
-.logo-mark {
-  width: 44px;
+.logo :deep(img) {
   height: 44px;
+  width: auto;
   flex-shrink: 0;
-}
-
-.logo-text-wrap {
-  display: flex;
-  flex-direction: column;
-}
-
-.logo-name {
-  font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--color-text);
-  letter-spacing: -0.01em;
-  line-height: 1.1;
-}
-
-.logo-sub {
-  font-size: 10.5px;
-  color: var(--color-text-muted);
-  letter-spacing: 0.04em;
-  line-height: 1.3;
-  margin-top: 2px;
+  object-fit: contain;
 }
 
 /* SEARCH */
@@ -490,11 +460,6 @@ const submitSearch = (e: Event) => {
 }
 
 /* RESPONSIVE */
-@media (max-width: 1100px) {
-  .logo-text-wrap {
-    display: none;
-  }
-}
 
 @media (max-width: 900px) {
   .topbar-row .email,

@@ -6,9 +6,9 @@ const SUFFIX = ` | ${SITE_NAME}`
 const BASE_URL = 'https://www.medcoregroup.kz'
 const DEFAULT_LOCALE = 'ru_RU'
 const DEFAULT_TWITTER_CARD = 'summary_large_image'
-const DEFAULT_OG_IMAGE_WIDTH = '1200'
-const DEFAULT_OG_IMAGE_HEIGHT = '630'
-const DEFAULT_OG_IMAGE = `${BASE_URL}/og-default.jpg`
+const DEFAULT_OG_IMAGE_WIDTH = '1536'
+const DEFAULT_OG_IMAGE_HEIGHT = '1024'
+const DEFAULT_OG_IMAGE = `${BASE_URL}/og-default.png`
 
 // ── Utility exports ────────────────────────────────────────────────────────
 

@@ -118,7 +118,7 @@ h1 {
   background: var(--color-surface, #efece5);
 }
 
-.media img {
+.media :deep(img) {
   width: 100%;
   height: 100%;
   object-fit: cover;

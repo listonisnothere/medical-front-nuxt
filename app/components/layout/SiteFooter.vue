@@ -93,12 +93,13 @@ const cols = computed(() => [
         <div class="grid">
           <div class="brand">
             <RouterLink to="/" class="footer-logo" aria-label="MedCore Group">
-              <svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <rect width="56" height="56" rx="10" fill="#1a4f9c" />
-                <path d="M11 39V17h5l6 13 6-13h5v22h-4V25l-5 11h-4l-5-11v14h-4z" fill="#fff" />
-                <circle cx="44" cy="20" r="4" fill="#c8881a" />
-              </svg>
-              <span class="footer-logo-name">MedCore Group</span>
+              <NuxtImg
+                src="~/assets/images/og-logo.png"
+                alt="MedCore Group"
+                format="webp"
+                width="140"
+                height="93"
+              />
             </RouterLink>
             <p class="brand-desc">{{ $t('footer.brandDesc') }}</p>
             <div class="contacts">
@@ -244,18 +245,10 @@ const cols = computed(() => [
   margin-bottom: var(--space-4);
 }
 
-.footer-logo svg {
-  width: 40px;
+.footer-logo :deep(img) {
   height: 40px;
-  flex-shrink: 0;
-}
-
-.footer-logo-name {
-  font-family: var(--font-display);
-  font-size: 18px;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: -0.01em;
+  width: auto;
+  object-fit: contain;
 }
 
 .brand-desc {
