@@ -150,7 +150,7 @@ await useAsyncData('publicationsData', () => store.load())
           quality="85"
           width="900"
           height="500"
-          sizes="(max-width: 768px) 100vw, 900px"
+          sizes="100vw md:900px"
         />
       </div>
 

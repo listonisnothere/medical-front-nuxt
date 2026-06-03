@@ -25,7 +25,7 @@ import { RouterLink } from 'vue-router'
         decoding="async"
         format="webp"
         quality="85"
-        sizes="(max-width: 900px) 100vw, 50vw"
+        sizes="100vw lg:50vw"
         width="640"
         height="640"
       />

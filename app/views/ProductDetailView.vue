@@ -225,7 +225,7 @@ await Promise.all([
             quality="85"
             width="600"
             height="600"
-            sizes="(max-width: 768px) 100vw, 50vw"
+            sizes="100vw md:50vw"
           />
           <span v-if="product.badge" class="badge" :class="{ accent: product.badge === 'Акция' }">
             {{ product.badge }}

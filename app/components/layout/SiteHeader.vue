@@ -100,8 +100,8 @@ const submitSearch = (e: Event) => {
               src="/og-logo.png"
               alt="MedCore Group"
               format="webp"
-              width="160"
-              height="107"
+              width="240"
+              height="160"
               loading="eager"
             />
           </RouterLink>
@@ -247,7 +247,7 @@ const submitSearch = (e: Event) => {
 }
 
 .logo :deep(img) {
-  height: 44px;
+  height: 64px;
   width: auto;
   flex-shrink: 0;
   object-fit: contain;

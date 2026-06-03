@@ -97,8 +97,8 @@ const cols = computed(() => [
                 src="/og-logo.png"
                 alt="MedCore Group"
                 format="webp"
-                width="140"
-                height="93"
+                width="200"
+                height="134"
               />
             </RouterLink>
             <p class="brand-desc">{{ $t('footer.brandDesc') }}</p>
@@ -246,7 +246,7 @@ const cols = computed(() => [
 }
 
 .footer-logo :deep(img) {
-  height: 40px;
+  height: 56px;
   width: auto;
   object-fit: contain;
 }

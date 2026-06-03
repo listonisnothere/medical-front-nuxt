@@ -133,7 +133,7 @@ function openQuote() {
         quality="80"
         width="400"
         height="300"
-        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        sizes="100vw sm:50vw lg:33vw"
         @error="onImgError"
       />
 
