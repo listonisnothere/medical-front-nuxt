@@ -18,7 +18,7 @@ import { RouterLink } from 'vue-router'
 
     <div class="media" aria-hidden="true">
       <NuxtImg
-        src="~/assets/images/hero.png"
+        src="/hero.png"
         alt=""
         loading="eager"
         fetchpriority="high"

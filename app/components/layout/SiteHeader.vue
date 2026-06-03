@@ -97,7 +97,7 @@ const submitSearch = (e: Event) => {
         <div class="main-row">
           <RouterLink to="/" class="logo" :aria-label="$t('header.logoAriaLabel')">
             <NuxtImg
-              src="~/assets/images/og-logo.png"
+              src="/og-logo.png"
               alt="MedCore Group"
               format="webp"
               width="160"

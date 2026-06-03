@@ -94,7 +94,7 @@ const cols = computed(() => [
           <div class="brand">
             <RouterLink to="/" class="footer-logo" aria-label="MedCore Group">
               <NuxtImg
-                src="~/assets/images/og-logo.png"
+                src="/og-logo.png"
                 alt="MedCore Group"
                 format="webp"
                 width="140"
