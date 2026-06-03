@@ -129,7 +129,7 @@ function onKey(e: KeyboardEvent) {
   padding: var(--space-7) var(--space-9);
   gap: var(--space-3);
   max-width: 580px;
-  color: #fff;
+  color: #0e1f35;
 }
 
 .slide-content h2 {
@@ -157,18 +157,18 @@ function onKey(e: KeyboardEvent) {
   padding: 10px 22px;
   font-size: 14px;
   font-weight: 500;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  color: #0e1f35;
+  border: 1px solid rgba(14, 31, 53, 0.35);
   border-radius: 999px;
   text-decoration: none;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(14, 31, 53, 0.07);
   backdrop-filter: blur(4px);
   transition: background 0.2s, border-color 0.2s;
 }
 
 .slide-cta:hover {
-  background: rgba(255, 255, 255, 0.22);
-  border-color: rgba(255, 255, 255, 0.9);
+  background: rgba(14, 31, 53, 0.14);
+  border-color: rgba(14, 31, 53, 0.7);
 }
 
 .slide-cta svg {
