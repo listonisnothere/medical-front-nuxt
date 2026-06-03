@@ -3,7 +3,6 @@ import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import AppContainer from '@/components/ui/AppContainer.vue'
 import HeroBlock from '@/components/home/HeroBlock.vue'
-import BannersCarousel from '@/components/home/BannersCarousel.vue'
 import DirectionsBlock from '@/components/home/DirectionsBlock.vue'
 import StatsBlock from '@/components/home/StatsBlock.vue'
 import EquipmentQuiz from '@/components/quiz/EquipmentQuiz.vue'
@@ -14,12 +13,10 @@ import LogoStrip from '@/components/ui/LogoStrip.vue'
 import PublicationsTabs from '@/components/home/PublicationsTabs.vue'
 import { useProductsDataStore } from '@/stores/productsData'
 import { useBrandsDataStore } from '@/stores/brandsData'
-import { useBannersDataStore } from '@/stores/bannersData'
 import { useMeta } from '@/composables/useMeta'
 
 const productsStore = useProductsDataStore()
 const brandsStore = useBrandsDataStore()
-const bannersStore = useBannersDataStore()
 const popular = computed(() => productsStore.items.slice(0, 8))
 const brandNames = computed(() =>
   brandsStore.items.slice(0, 8).map((b: { name: string; slug: string }) => ({ name: b.name, slug: b.slug })),
@@ -87,7 +84,6 @@ useMeta({
 await Promise.all([
   useAsyncData('productsData', () => productsStore.load()),
   useAsyncData('brandsData', () => brandsStore.load()),
-  useAsyncData('bannersData', () => bannersStore.load()),
 ])
 </script>
 
@@ -99,11 +95,8 @@ await Promise.all([
       <HeroBlock />
     </section>
 
-    <section v-if="bannersStore.items.length" class="block">
-      <BannersCarousel />
-    </section>
 
-    <section class="block">
+<section class="block">
       <DirectionsBlock />
     </section>
 
