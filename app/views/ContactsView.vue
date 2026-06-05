@@ -6,6 +6,7 @@ import BaseButton from '@/components/ui/BaseButton.vue'
 import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import { useMeta } from '@/composables/useMeta'
 import api from '@/composables/useApi'
+import { KZ_PHONE_PATTERN, formatKzPhone } from '@/utils/phone'
 
 useMeta({
   title: () => 'Контакты',
@@ -74,6 +75,10 @@ const submit = async (e: Event) => {
   sent.value = true
   form.value = { name: '', phone: '', message: '' }
 }
+
+const onPhoneInput = (e: Event) => {
+  form.value.phone = formatKzPhone((e.target as HTMLInputElement).value)
+}
 </script>
 
 <template>
@@ -125,14 +130,24 @@ const submit = async (e: Event) => {
           </label>
           <label>
             <span>{{ $t('contacts.labelPhone') }}</span>
-            <input v-model="form.phone" type="tel" required :placeholder="$t('contacts.placeholderPhone')" />
+            <input
+              :value="form.phone"
+              type="tel"
+              required
+              inputmode="tel"
+              autocomplete="tel"
+              :pattern="KZ_PHONE_PATTERN"
+              maxlength="18"
+              :placeholder="$t('contacts.placeholderPhone')"
+              @input="onPhoneInput"
+            />
           </label>
           <label>
             <span>{{ $t('contacts.labelMessage') }}</span>
             <textarea v-model="form.message" rows="4" :placeholder="$t('contacts.placeholderMessage')" />
           </label>
 
-          <BaseButton variant="primary" size="lg" :disabled="loading">
+          <BaseButton type="submit" variant="primary" size="lg" :disabled="loading">
             {{ loading ? $t('contacts.submitting') : $t('contacts.submit') }}
           </BaseButton>
 

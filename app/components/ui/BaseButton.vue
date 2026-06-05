@@ -3,6 +3,7 @@ defineProps<{
   variant?: 'primary' | 'outline' | 'ghost' | 'accent'
   size?: 'sm' | 'md' | 'lg'
   to?: string
+  type?: 'button' | 'submit' | 'reset'
 }>()
 
 const emit = defineEmits<{
@@ -22,7 +23,7 @@ const emit = defineEmits<{
   </RouterLink>
   <button
     v-else
-    type="button"
+    :type="type ?? 'button'"
     class="btn"
     :class="[`btn--${variant ?? 'primary'}`, `btn--${size ?? 'md'}`]"
     @click="emit('click', $event)"

@@ -8,6 +8,7 @@ import { useCitiesDataStore, type City } from '@/stores/citiesData'
 import api from '@/composables/useApi'
 import { trackGoal } from '@/composables/useAnalytics'
 import { formatQuizSummary } from '@/composables/useQuiz'
+import { KZ_PHONE_PATTERN, formatKzPhone } from '@/utils/phone'
 
 const ui = useUiStore()
 const citiesStore = useCitiesDataStore()
@@ -104,6 +105,10 @@ const submit = async (e: Event) => {
   }
 }
 
+const onPhoneInput = (e: Event) => {
+  form.value.phone = formatKzPhone((e.target as HTMLInputElement).value)
+}
+
 const onKey = (e: KeyboardEvent) => {
   if (e.key === 'Escape' && ui.quoteOpen) close()
 }
@@ -158,10 +163,15 @@ watch(
                 <label>
                   <span>{{ $t('quoteModal.labelPhone') }}</span>
                   <input
-                    v-model="form.phone"
+                    :value="form.phone"
                     required
                     type="tel"
+                    inputmode="tel"
+                    autocomplete="tel"
+                    :pattern="KZ_PHONE_PATTERN"
+                    maxlength="18"
                     :placeholder="$t('quoteModal.placeholderPhone')"
+                    @input="onPhoneInput"
                   />
                 </label>
                 <label>
@@ -199,7 +209,12 @@ watch(
 
               <p v-if="error" class="error">{{ error }}</p>
 
-              <BaseButton variant="primary" size="lg" :disabled="submitting || loadingCities || !hasCityChoices">
+              <BaseButton
+                type="submit"
+                variant="primary"
+                size="lg"
+                :disabled="submitting || loadingCities || !hasCityChoices"
+              >
                 {{ submitting ? $t('quoteModal.sending') : $t('quoteModal.submit') }}
               </BaseButton>
             </form>
