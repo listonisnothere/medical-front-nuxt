@@ -2,6 +2,7 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import api from '@/composables/useApi'
+import { useUiStore } from '@/stores/ui'
 
 interface Banner {
   id: string
@@ -14,6 +15,7 @@ interface Banner {
 
 const slides = ref<Banner[]>([])
 const active = ref(0)
+const ui = useUiStore()
 let timer: number | undefined
 
 const GRADIENTS = [
@@ -68,7 +70,7 @@ onUnmounted(() => {
             {{ slide.linkLabel }}
             <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </RouterLink>
-          <RouterLink to="/contacts" class="cta-btn cta-btn--outline">Получить КП</RouterLink>
+          <button type="button" class="cta-btn cta-btn--outline" @click="ui.openQuote()">Получить КП</button>
         </div>
       </div>
 

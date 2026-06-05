@@ -4,6 +4,10 @@ defineProps<{
   size?: 'sm' | 'md' | 'lg'
   to?: string
 }>()
+
+const emit = defineEmits<{
+  click: [event: MouseEvent]
+}>()
 </script>
 
 <template>
@@ -12,10 +16,17 @@ defineProps<{
     :to="to"
     class="btn"
     :class="[`btn--${variant ?? 'primary'}`, `btn--${size ?? 'md'}`]"
+    @click="emit('click', $event)"
   >
     <slot />
   </RouterLink>
-  <button v-else class="btn" :class="[`btn--${variant ?? 'primary'}`, `btn--${size ?? 'md'}`]">
+  <button
+    v-else
+    type="button"
+    class="btn"
+    :class="[`btn--${variant ?? 'primary'}`, `btn--${size ?? 'md'}`]"
+    @click="emit('click', $event)"
+  >
     <slot />
   </button>
 </template>

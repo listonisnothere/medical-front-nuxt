@@ -458,7 +458,7 @@
     "labelMessage": "Түсініктеме",
     "placeholderName": "Сіздің атыңыз",
     "placeholderPhone": "+7 (___) ___-__-__",
-    "placeholderEmail": "you@example.com",
+    "placeholderEmail": "you{'@'}example.com",
     "placeholderCity": "Қаланы таңдаңыз",
     "placeholderMessage": "Жинақтауды нақтылаңыз немесе сұрақ қойыңыз",
     "loadingCities": "Қалалар жүктелуде...",
