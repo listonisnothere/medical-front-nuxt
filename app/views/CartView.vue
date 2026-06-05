@@ -45,7 +45,11 @@ await useAsyncData('productsData', () => store.load())
       <aside class="summary">
         <h3>{{ $t('cart.summaryTitle') }}</h3>
         <p>{{ $t('cart.summaryText') }}</p>
-        <BaseButton variant="primary" size="lg" @click="ui.openQuote()">
+        <BaseButton
+          variant="primary"
+          size="lg"
+          @click="ui.openQuote({ productIds: items.map((p) => p.id), source: 'cart' })"
+        >
           {{ $t('cart.checkout') }}
         </BaseButton>
         <button class="clear" @click="cart.clear()">{{ $t('cart.clear') }}</button>

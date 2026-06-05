@@ -177,7 +177,7 @@ function formatDate(iso: string | null) {
             <BaseButton
               variant="primary"
               class="ai-card__cta"
-              @click="ui.openQuote({ product: item, source: 'compare-ai' })"
+              @click="ui.openQuote({ product: item, source: 'product' })"
             >
               {{ $t('compare.aiRequestQuote', { name: item.name }) }}
             </BaseButton>

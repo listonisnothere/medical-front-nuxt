@@ -146,7 +146,8 @@ function openQuote() {
     productIds: recommendations.value.map((p) => p.id),
   })
   ui.openQuote({
-    source: 'quiz',
+    productIds: recommendations.value.map((p) => p.id),
+    source: 'cart',
     quizAnswers: answers as QuizAnswers,
   })
 }

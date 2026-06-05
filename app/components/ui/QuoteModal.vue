@@ -1,48 +1,106 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import BaseButton from './BaseButton.vue'
 import { useUiStore } from '@/stores/ui'
+import { useCitiesDataStore, type City } from '@/stores/citiesData'
 import api from '@/composables/useApi'
 import { trackGoal } from '@/composables/useAnalytics'
 import { formatQuizSummary } from '@/composables/useQuiz'
 
 const ui = useUiStore()
-const form = ref({ name: '', phone: '', email: '', message: '' })
+const citiesStore = useCitiesDataStore()
+const { t } = useI18n()
+const form = ref({ name: '', phone: '', email: '', citySlug: '', message: '' })
 const sent = ref(false)
 const submitting = ref(false)
+const loadingCities = ref(false)
+const availableCities = ref<Array<City & { stockStatus?: string }>>([])
+const error = ref('')
+
+const hasCityChoices = computed(() => availableCities.value.length > 0)
+
+const allowedSources = new Set(['product', 'cart', 'service', 'contact'])
+
+const resolvedSource = () => {
+  const source = ui.quoteSource ?? (ui.quoteProduct ? 'product' : ui.quoteProductIds.length ? 'cart' : 'contact')
+  if (allowedSources.has(source)) return source
+  return ui.quoteProduct ? 'product' : 'contact'
+}
 
 const close = () => {
   ui.closeQuote()
   sent.value = false
+  error.value = ''
+}
+
+const fetchProductCities = async (productId: string): Promise<Array<City & { stockStatus?: string }>> => {
+  const { data } = await api.get(`/products/${productId}/available-cities`)
+  return Array.isArray(data) ? data : []
+}
+
+const loadAvailableCities = async () => {
+  loadingCities.value = true
+  error.value = ''
+  try {
+    await citiesStore.load()
+    const allCities = citiesStore.items
+
+    if (ui.quoteProduct) {
+      availableCities.value = await fetchProductCities(ui.quoteProduct.id)
+    } else if (ui.quoteProductIds.length) {
+      const lists = await Promise.all(ui.quoteProductIds.map((id) => fetchProductCities(id)))
+      const [first = []] = lists
+      availableCities.value = first.filter((city) => lists.every((list) => list.some((item) => item.slug === city.slug)))
+    } else {
+      availableCities.value = allCities
+    }
+
+    const currentStillAvailable = availableCities.value.some((city) => city.slug === form.value.citySlug)
+    if (!currentStillAvailable) {
+      const defaultCity = availableCities.value.find((city) => city.isDefault) ?? availableCities.value[0]
+      form.value.citySlug = defaultCity?.slug ?? ''
+    }
+  } catch {
+    availableCities.value = []
+    form.value.citySlug = ''
+    error.value = t('quoteModal.cityLoadError')
+  } finally {
+    loadingCities.value = false
+  }
 }
 
 const submit = async (e: Event) => {
   e.preventDefault()
+  if (!hasCityChoices.value || !form.value.citySlug) return
   submitting.value = true
+  error.value = ''
   try {
-    const resolvedSource = ui.quoteSource ?? (ui.quoteProduct ? 'product' : 'contact')
+    const source = resolvedSource()
     await api.post('/quotes', {
       name: form.value.name,
       phone: form.value.phone,
-      email: form.value.email || undefined,
+      email: form.value.email,
+      citySlug: form.value.citySlug,
       message: form.value.message || undefined,
       productId: ui.quoteProduct?.id,
-      source: resolvedSource,
+      productIds: ui.quoteProduct ? undefined : ui.quoteProductIds,
+      source,
     })
+    sent.value = true
+    trackGoal('quote_request', {
+      product_id: ui.quoteProduct?.id ?? null,
+      product_name: ui.quoteProduct?.name ?? null,
+      product_ids: ui.quoteProductIds,
+      city: form.value.citySlug,
+      source,
+    })
+    setTimeout(close, 1800)
   } catch {
-    // show success regardless — lead is best-effort
+    error.value = t('quoteModal.submitError')
   } finally {
     submitting.value = false
   }
-  sent.value = true
-  const resolvedSource2 = ui.quoteSource ?? (ui.quoteProduct ? 'product' : 'contact')
-  trackGoal('quote_request', {
-    product_id: ui.quoteProduct?.id ?? null,
-    product_name: ui.quoteProduct?.name ?? null,
-    source: resolvedSource2,
-  })
-  setTimeout(close, 1800)
 }
 
 const onKey = (e: KeyboardEvent) => {
@@ -57,11 +115,15 @@ watch(
   (open) => {
     document.body.style.overflow = open ? 'hidden' : ''
     if (open) {
+      sent.value = false
+      error.value = ''
+      loadAvailableCities()
       if (ui.quoteQuizAnswers) {
         form.value.message = `Подбор: ${formatQuizSummary(ui.quoteQuizAnswers)}`
       }
     } else {
-      form.value = { name: '', phone: '', email: '', message: '' }
+      form.value = { name: '', phone: '', email: '', citySlug: '', message: '' }
+      availableCities.value = []
     }
   },
 )
@@ -103,9 +165,23 @@ watch(
                 </label>
                 <label>
                   <span>{{ $t('quoteModal.labelEmail') }}</span>
-                  <input v-model="form.email" type="email" :placeholder="$t('quoteModal.placeholderEmail')" />
+                  <input v-model="form.email" required type="email" :placeholder="$t('quoteModal.placeholderEmail')" />
                 </label>
               </div>
+              <label>
+                <span>{{ $t('quoteModal.labelCity') }}</span>
+                <select v-model="form.citySlug" required :disabled="loadingCities || !hasCityChoices">
+                  <option value="" disabled>
+                    {{ loadingCities ? $t('quoteModal.loadingCities') : $t('quoteModal.placeholderCity') }}
+                  </option>
+                  <option v-for="city in availableCities" :key="city.slug" :value="city.slug">
+                    {{ city.name }}{{ city.stockStatus === 'on_order' ? ` — ${$t('quoteModal.onOrder')}` : '' }}
+                  </option>
+                </select>
+                <small v-if="!loadingCities && !hasCityChoices" class="city-note">
+                  {{ $t('quoteModal.noCities') }}
+                </small>
+              </label>
               <label>
                 <span>{{ $t('quoteModal.labelMessage') }}</span>
                 <textarea
@@ -120,7 +196,9 @@ watch(
                 <RouterLink to="/privacy">{{ $t('quoteModal.agreeLink') }}</RouterLink>.
               </p>
 
-              <BaseButton variant="primary" size="lg" :disabled="submitting">
+              <p v-if="error" class="error">{{ error }}</p>
+
+              <BaseButton variant="primary" size="lg" :disabled="submitting || loadingCities || !hasCityChoices">
                 {{ submitting ? $t('quoteModal.sending') : $t('quoteModal.submit') }}
               </BaseButton>
             </form>
@@ -244,6 +322,7 @@ label {
 }
 
 input,
+select,
 textarea {
   font: inherit;
   font-size: 15px;
@@ -257,10 +336,24 @@ textarea {
 }
 
 input:focus,
+select:focus,
 textarea:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+
+.city-note {
+  font-size: 12px;
+  color: var(--color-danger);
+}
+
+.error {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: #fff1f1;
+  color: var(--color-danger);
+  font-size: 13px;
 }
 
 .agree {
