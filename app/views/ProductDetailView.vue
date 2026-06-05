@@ -41,6 +41,17 @@ const { data: cityProduct } = await useAsyncData(
 
 const product = computed(() => cityProduct.value ?? productsStore.items.find((p) => p.id === route.params.id))
 
+const category = computed(() => {
+  if (!product.value) return null
+  const slug = product.value.category
+  for (const cat of categoriesStore.items as any[]) {
+    if ((cat as any).slug === slug) return cat
+    const child = (cat as any).children?.find((c: any) => c.slug === slug)
+    if (child) return child
+  }
+  return null
+})
+
 // City availability badge
 const cityAvail = computed(() => cityProduct.value?.cityAvailability ?? null)
 const alternativeCities = computed(() => cityProduct.value?.alternativeCities ?? [])
@@ -139,17 +150,6 @@ useMeta({
       ],
     }
   },
-})
-
-const category = computed(() => {
-  if (!product.value) return null
-  const slug = product.value.category
-  for (const cat of categoriesStore.items as any[]) {
-    if ((cat as any).slug === slug) return cat
-    const child = (cat as any).children?.find((c: any) => c.slug === slug)
-    if (child) return child
-  }
-  return null
 })
 
 const tab = ref<'description' | 'specs' | 'docs'>('description')
