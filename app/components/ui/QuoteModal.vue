@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import BaseButton from './BaseButton.vue'
 import { useUiStore } from '@/stores/ui'
 import { useCitiesDataStore, type City } from '@/stores/citiesData'
