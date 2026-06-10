@@ -4,6 +4,7 @@ import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import type { Product } from '@/data/products'
 import { useWishlistStore } from '@/stores/wishlist'
+import { useCartStore } from '@/stores/cart'
 import { useUiStore } from '@/stores/ui'
 
 const props = defineProps<{ product: Product }>()
@@ -16,6 +17,7 @@ function onImgError() {
   imageSrc.value = '/img/product-placeholder.svg'
 }
 const wishlist = useWishlistStore()
+const cart = useCartStore()
 const ui = useUiStore()
 
 const NEW_PRODUCT_DAYS = 60
@@ -116,6 +118,10 @@ function toggleWishlist() {
   wishlist.toggle(props.product.id)
 }
 
+function toggleCart() {
+  cart.toggle(props.product.id)
+}
+
 function openQuote() {
   ui.openQuote(props.product)
 }
@@ -199,6 +205,9 @@ function openQuote() {
       <div class="actions">
         <button type="button" class="btn btn--cta" @click="openQuote">
           {{ $t('productCard.ctaBtn') }}
+        </button>
+        <button type="button" class="btn btn--cart" :class="{ active: cart.has(product.id) }" @click="toggleCart">
+          {{ cart.has(product.id) ? $t('productCard.inCart') : $t('productCard.addCart') }}
         </button>
         <RouterLink :to="`/product/${product.id}`" class="btn btn--secondary">
           {{ $t('productCard.details') }}
@@ -520,13 +529,13 @@ function openQuote() {
 
 /* ACTIONS */
 .actions {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 8px;
   margin-top: 4px;
 }
 
 .btn {
-  flex: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -539,18 +548,33 @@ function openQuote() {
   border: 1px solid transparent;
   cursor: pointer;
   transition: filter 0.15s, background 0.15s, color 0.15s, transform 0.05s;
-  white-space: nowrap;
+  min-height: 40px;
+  text-align: center;
+  white-space: normal;
 }
 
 .btn:active { transform: translateY(1px); }
 
 .btn--cta {
+  grid-column: 1 / -1;
   background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
   color: #fff;
-  flex: 2;
 }
 
 .btn--cta:hover { filter: brightness(1.08); }
+
+.btn--cart {
+  background: #e9f5f2;
+  color: #1f5f55;
+  border-color: #cfe8e1;
+}
+
+.btn--cart:hover,
+.btn--cart.active {
+  background: #1f8a78;
+  color: #fff;
+  border-color: #1f8a78;
+}
 
 .btn--secondary {
   background: transparent;

@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import SiteHeader from '@/components/layout/SiteHeader.vue'
 import SiteFooter from '@/components/layout/SiteFooter.vue'
 import QuoteModal from '@/components/ui/QuoteModal.vue'
+import CartReminder from '@/components/ui/CartReminder.vue'
 import CookieBanner from '@/components/ui/CookieBanner.vue'
 import CityConfirmBar from '@/components/layout/CityConfirmBar.vue'
 import { useConsent } from '@/composables/useConsent'
@@ -39,6 +40,9 @@ watch(consent, (value) => {
   </main>
   <SiteFooter />
   <QuoteModal />
+  <ClientOnly>
+    <CartReminder />
+  </ClientOnly>
   <CookieBanner />
 </template>
 

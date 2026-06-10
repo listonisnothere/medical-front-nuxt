@@ -4,6 +4,7 @@ import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import BaseButton from './BaseButton.vue'
 import { useUiStore } from '@/stores/ui'
+import { useCartStore } from '@/stores/cart'
 import { useCitiesDataStore, type City } from '@/stores/citiesData'
 import api from '@/composables/useApi'
 import { trackGoal } from '@/composables/useAnalytics'
@@ -11,6 +12,7 @@ import { formatQuizSummary } from '@/composables/useQuiz'
 import { KZ_PHONE_PATTERN, formatKzPhone } from '@/utils/phone'
 
 const ui = useUiStore()
+const cart = useCartStore()
 const citiesStore = useCitiesDataStore()
 const { t } = useI18n()
 const form = ref({ name: '', phone: '', email: '', citySlug: '', message: '' })
@@ -89,6 +91,7 @@ const submit = async (e: Event) => {
       productIds: ui.quoteProduct ? undefined : ui.quoteProductIds,
       source,
     })
+    if (source === 'cart') cart.clearAfterSubmit()
     sent.value = true
     trackGoal('quote_request', {
       product_id: ui.quoteProduct?.id ?? null,

@@ -62,6 +62,12 @@
     "removeItem": "Remove",
     "updateQuantity": "Update Quantity"
   },
+  "cartReminder": {
+    "title": "Products are waiting in your cart",
+    "text": "There are {n} items in your cart. Send one offer request for all products.",
+    "open": "Open cart",
+    "dismiss": "Hide reminder"
+  },
   "services": {
     "title": "Services",
     "description": "Our Services"
@@ -106,6 +112,23 @@
     "aiRequestQuote": "Request quote for {name}",
     "aiError": "Could not compare. Please try again later.",
     "aiTitle": "AI Comparison"
+  },
+  "productCard": {
+    "badgeHot": "Top seller",
+    "badgeSale": "Sale",
+    "badgeNew": "New",
+    "badgeDiscount": "{n}% off",
+    "inStock": "In stock",
+    "onOrder": "On order",
+    "outOfStock": "Out of stock",
+    "removeWishlist": "Remove from wishlist",
+    "addWishlist": "Add to wishlist",
+    "addCart": "Add to cart",
+    "inCart": "In cart",
+    "ctaBtn": "Get offer in 2 hours",
+    "details": "Details",
+    "urgencyLeft": "{n} left",
+    "discountUntil": "{n}% off until {date}"
   },
   "quoteModal": {
     "title": "Request a commercial offer",
