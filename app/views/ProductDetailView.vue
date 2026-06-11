@@ -191,6 +191,7 @@ const gallery = computed<string[]>(() => {
   return product.value.image ? [product.value.image] : []
 })
 const activeImage = ref(0)
+const isInCart = computed(() => (product.value ? cart.items.includes(product.value.id) : false))
 
 await Promise.all([
   useAsyncData('productsData', () => productsStore.load()),
@@ -291,7 +292,7 @@ await Promise.all([
             {{ $t('product.requestQuote') }}
           </BaseButton>
           <BaseButton variant="outline" size="lg" @click="cart.toggle(product.id)">
-            {{ cart.has(product.id) ? $t('product.inCart') : $t('product.buy') }}
+            {{ isInCart ? $t('product.inCart') : $t('product.buy') }}
           </BaseButton>
         </div>
 

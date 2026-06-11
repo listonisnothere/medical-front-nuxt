@@ -15,7 +15,9 @@ const cart = useCartStore()
 const ui = useUiStore()
 const store = useProductsDataStore()
 
-const items = computed(() => store.items.filter((p) => cart.has(p.id)))
+const cartIds = computed(() => new Set(cart.items))
+const items = computed(() => store.items.filter((p) => cartIds.value.has(p.id)))
+const checkoutProductIds = computed(() => items.value.map((p) => p.id))
 
 await useAsyncData('productsData', () => store.load())
 </script>
@@ -48,7 +50,7 @@ await useAsyncData('productsData', () => store.load())
         <BaseButton
           variant="primary"
           size="lg"
-          @click="ui.openQuote({ productIds: items.map((p) => p.id), source: 'cart' })"
+          @click="ui.openQuote({ productIds: checkoutProductIds, source: 'cart' })"
         >
           {{ $t('cart.checkout') }}
         </BaseButton>
