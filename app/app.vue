@@ -6,6 +6,7 @@ import SiteFooter from '@/components/layout/SiteFooter.vue'
 import QuoteModal from '@/components/ui/QuoteModal.vue'
 import CartReminder from '@/components/ui/CartReminder.vue'
 import CookieBanner from '@/components/ui/CookieBanner.vue'
+import WhatsAppWidget from '@/components/ui/WhatsAppWidget.vue'
 import CityConfirmBar from '@/components/layout/CityConfirmBar.vue'
 import { useConsent } from '@/composables/useConsent'
 import { loadYandexMetrika } from '@/composables/useYandexMetrika'
@@ -43,6 +44,7 @@ watch(consent, (value) => {
   <ClientOnly>
     <CartReminder />
   </ClientOnly>
+  <WhatsAppWidget />
   <CookieBanner />
 </template>
 
