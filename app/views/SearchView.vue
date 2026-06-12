@@ -1,15 +1,35 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import AppContainer from '@/components/ui/AppContainer.vue'
 import SectionHeading from '@/components/ui/SectionHeading.vue'
 import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import ProductCard from '@/components/ui/ProductCard.vue'
-import api from '@/composables/useApi'
 import type { Product } from '@/data/products'
 import { useMeta } from '@/composables/useMeta'
 
 const route = useRoute()
+const config = useRuntimeConfig()
+
+type SearchResponse = Product[] | {
+  results?: Product[]
+  data?: Product[]
+  total?: number
+  query?: string
+}
+
+const searchQuery = computed(() => {
+  const raw = route.query.q
+  return Array.isArray(raw) ? (raw[0] ?? '') : (raw ?? '')
+})
+
+function extractResults(data: SearchResponse | null | undefined): Product[] {
+  if (Array.isArray(data)) return data
+  if (Array.isArray(data?.results)) return data.results
+  if (Array.isArray(data?.data)) return data.data
+  return []
+}
+
 useMeta({
   title: () => route.query.q ? `Поиск: ${route.query.q}` : 'Поиск оборудования',
   description: () =>
@@ -19,25 +39,20 @@ useMeta({
   noindex: true,
 })
 
-const results = ref<Product[]>([])
-const loading = ref(false)
+const { data: searchData, pending: loading } = await useAsyncData<SearchResponse>(
+  'search-results',
+  async () => {
+    const q = searchQuery.value.trim()
+    if (!q) return { results: [], total: 0, query: q }
 
-async function search(q: string) {
-  if (!q.trim()) { results.value = []; return }
-  loading.value = true
-  try {
-    const { data } = await api.get('/search', { params: { q } })
-    results.value = Array.isArray(data) ? data : (data.data ?? [])
-  } finally {
-    loading.value = false
-  }
-}
-
-watch(
-  () => route.query.q as string,
-  (q) => search(q ?? ''),
-  { immediate: true },
+    return await $fetch<SearchResponse>(`${config.public.apiBase}/search`, {
+      query: { q },
+    }).catch(() => ({ results: [], total: 0, query: q }))
+  },
+  { watch: [searchQuery] },
 )
+
+const results = computed(() => extractResults(searchData.value))
 </script>
 
 <template>
