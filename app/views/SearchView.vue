@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import AppContainer from '@/components/ui/AppContainer.vue'
 import SectionHeading from '@/components/ui/SectionHeading.vue'
 import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import ProductCard from '@/components/ui/ProductCard.vue'
 import type { Product } from '@/data/products'
+import api from '@/composables/useApi'
 import { useMeta } from '@/composables/useMeta'
 
 const route = useRoute()
@@ -30,6 +31,30 @@ function extractResults(data: SearchResponse | null | undefined): Product[] {
   return []
 }
 
+function emptySearch(query = ''): SearchResponse {
+  return { results: [], total: 0, query }
+}
+
+async function fetchSearchData(query: string): Promise<SearchResponse> {
+  const q = query.trim()
+  if (!q) return emptySearch(q)
+
+  try {
+    if (import.meta.server) {
+      return await $fetch<SearchResponse>(`${config.public.apiBase}/search`, {
+        query: { q },
+      })
+    }
+
+    const { data } = await api.get<SearchResponse>('/search', {
+      params: { q },
+    })
+    return data
+  } catch {
+    return emptySearch(q)
+  }
+}
+
 useMeta({
   title: () => route.query.q ? `Поиск: ${route.query.q}` : 'Поиск оборудования',
   description: () =>
@@ -39,20 +64,40 @@ useMeta({
   noindex: true,
 })
 
-const { data: searchData, pending: loading } = await useAsyncData<SearchResponse>(
-  'search-results',
-  async () => {
-    const q = searchQuery.value.trim()
-    if (!q) return { results: [], total: 0, query: q }
+const results = ref<Product[]>([])
+const loading = ref(false)
+let searchRequestId = 0
 
-    return await $fetch<SearchResponse>(`${config.public.apiBase}/search`, {
-      query: { q },
-    }).catch(() => ({ results: [], total: 0, query: q }))
-  },
-  { watch: [searchQuery] },
+async function runSearch(query: string) {
+  const q = query.trim()
+  const requestId = ++searchRequestId
+
+  if (!q) {
+    results.value = []
+    loading.value = false
+    return
+  }
+
+  loading.value = true
+  const data = await fetchSearchData(q)
+
+  if (requestId === searchRequestId) {
+    results.value = extractResults(data)
+    loading.value = false
+  }
+}
+
+const initialQuery = searchQuery.value.trim()
+const { data: initialSearchData } = await useAsyncData<SearchResponse>(
+  `search-results:${encodeURIComponent(initialQuery)}`,
+  () => fetchSearchData(initialQuery),
 )
 
-const results = computed(() => extractResults(searchData.value))
+results.value = extractResults(initialSearchData.value)
+
+watch(searchQuery, (query, previousQuery) => {
+  if (query !== previousQuery) runSearch(query)
+})
 </script>
 
 <template>
