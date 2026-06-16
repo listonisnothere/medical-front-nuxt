@@ -19,11 +19,11 @@
 <style scoped>
 .whatsapp-widget {
   position: fixed;
-  right: clamp(16px, 4vw, 32px);
-  bottom: calc(clamp(16px, 4vw, 32px) + 78px + env(safe-area-inset-bottom));
+  right: 24px;
+  bottom: calc(104px + env(safe-area-inset-bottom));
   z-index: 75;
-  width: 58px;
-  height: 58px;
+  width: 56px;
+  height: 56px;
   display: grid;
   place-items: center;
   color: #fff;
@@ -48,19 +48,14 @@
 }
 
 .whatsapp-widget svg {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
 }
 
 @media (max-width: 520px) {
   .whatsapp-widget {
-    width: 54px;
-    height: 54px;
-  }
-
-  .whatsapp-widget svg {
-    width: 32px;
-    height: 32px;
+    right: 20px;
+    bottom: calc(96px + env(safe-area-inset-bottom));
   }
 }
 </style>
