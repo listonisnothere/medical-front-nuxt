@@ -19,9 +19,9 @@
 <style scoped>
 .whatsapp-widget {
   position: fixed;
-  left: clamp(16px, 4vw, 32px);
-  bottom: calc(clamp(16px, 4vw, 32px) + env(safe-area-inset-bottom));
-  z-index: 70;
+  right: clamp(16px, 4vw, 32px);
+  bottom: calc(clamp(16px, 4vw, 32px) + 78px + env(safe-area-inset-bottom));
+  z-index: 75;
   width: 58px;
   height: 58px;
   display: grid;
