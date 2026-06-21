@@ -2,7 +2,6 @@
 import AppContainer from '@/components/ui/AppContainer.vue'
 import SectionHeading from '@/components/ui/SectionHeading.vue'
 import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
-import { RouterLink } from 'vue-router'
 import { useBrandsDataStore } from '@/stores/brandsData'
 import { useMeta } from '@/composables/useMeta'
 
@@ -31,7 +30,6 @@ useMeta({
           '@type': 'ListItem',
           position: i + 1,
           name: b.name,
-          url: `https://www.medcoregroup.kz/brands/${b.slug}`,
         })),
       }] : []),
     ],
@@ -48,10 +46,9 @@ await useAsyncData('brandsData', () => store.load())
       <SectionHeading :eyebrow="$t('brands.eyebrow')" :level="1">{{ $t('brands.title') }}</SectionHeading>
       <div v-if="store.loading" class="loading">{{ $t('brands.loading') }}</div>
       <div v-else class="grid">
-        <RouterLink
+        <article
           v-for="b in store.items"
           :key="b.slug"
-          :to="`/brands/${b.slug}`"
           class="card"
         >
           <div class="logo">{{ b.name }}</div>
@@ -59,7 +56,7 @@ await useAsyncData('brandsData', () => store.load())
             <span class="country">{{ b.country }}</span>
             <span class="status">{{ $t('brands.officialDistributor') }}</span>
           </div>
-        </RouterLink>
+        </article>
       </div>
     </div>
   </AppContainer>

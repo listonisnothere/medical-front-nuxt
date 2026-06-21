@@ -4,18 +4,9 @@ defineProps<{ items: { name: string; slug?: string }[] }>()
 
 <template>
   <div class="strip">
-    <template v-for="item in items" :key="item.name">
-      <RouterLink
-        v-if="item.slug"
-        :to="`/brands/${item.slug}`"
-        class="logo-tile logo-tile--link"
-      >
-        <span>{{ item.name }}</span>
-      </RouterLink>
-      <div v-else class="logo-tile">
-        <span>{{ item.name }}</span>
-      </div>
-    </template>
+    <div v-for="item in items" :key="item.name" class="logo-tile">
+      <span>{{ item.name }}</span>
+    </div>
   </div>
 </template>
 
@@ -41,11 +32,6 @@ defineProps<{ items: { name: string; slug?: string }[] }>()
   letter-spacing: 0.02em;
   text-align: center;
   transition: color 0.2s, border-color 0.2s, box-shadow 0.2s;
-}
-
-.logo-tile--link {
-  text-decoration: none;
-  cursor: pointer;
 }
 
 .logo-tile:hover {

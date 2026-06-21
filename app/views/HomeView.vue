@@ -19,7 +19,7 @@ const productsStore = useProductsDataStore()
 const brandsStore = useBrandsDataStore()
 const popular = computed(() => productsStore.items.slice(0, 8))
 const brandNames = computed(() =>
-  brandsStore.items.slice(0, 8).map((b: { name: string; slug: string }) => ({ name: b.name, slug: b.slug })),
+  brandsStore.items.slice(0, 8).map((b: { name: string }) => ({ name: b.name })),
 )
 
 useMeta({
@@ -89,8 +89,6 @@ await Promise.all([
 
 <template>
   <AppContainer>
-    <h1 class="sr-only">{{ $t('home.h1') }}</h1>
-
     <section class="block hero-block">
       <HeroBlock />
     </section>

@@ -1,19 +1,15 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
-import { useI18n } from 'vue-i18n'
 import AppContainer from '@/components/ui/AppContainer.vue'
 import SectionHeading from '@/components/ui/SectionHeading.vue'
 import ProductCard from '@/components/ui/ProductCard.vue'
 import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import { useMeta } from '@/composables/useMeta'
 import { useCatalogFilters } from '@/composables/useCatalogFilters'
-import { useCitiesDataStore } from '@/stores/citiesData'
-import { useSelectedCity } from '@/composables/useSelectedCity'
 import EquipmentQuiz from '@/components/quiz/EquipmentQuiz.vue'
 
 const route = useRoute()
-const { t } = useI18n()
 const isDesktop = ref(true)
 const filtersOpen = ref(false)
 
@@ -23,9 +19,6 @@ const {
   isDescendantActive, categoryProductCount, clearAllFilters, loading,
   productsStore, categoriesStore, brandsStore,
 } = useCatalogFilters()
-
-const citiesStore = useCitiesDataStore()
-const { selectedCity, selectedCitySlug } = useSelectedCity()
 
 function handleResize() {
   isDesktop.value = window.innerWidth > 900
@@ -92,13 +85,10 @@ useMeta({
   },
 })
 
-const visibleCities = computed(() => citiesStore.items.filter((c) => c.isVisible))
-
 await Promise.all([
   useAsyncData('productsData', () => productsStore.load()),
   useAsyncData('categoriesData', () => categoriesStore.load()),
   useAsyncData('brandsData', () => brandsStore.load()),
-  useAsyncData('citiesData', () => citiesStore.load()),
 ])
 </script>
 
@@ -110,8 +100,7 @@ await Promise.all([
           activeCategory
             ? [
                 { label: $t('catalog.breadcrumb'), to: '/catalog' },
-                { label: currentTitle, to: selectedCity ? `/catalog/${activeCategory}` : undefined },
-                ...(selectedCity ? [{ label: selectedCity.name, to: `/catalog/${activeCategory}/${selectedCitySlug}` }] : []),
+                { label: currentTitle },
               ]
             : [{ label: $t('catalog.breadcrumb') }]
         "
@@ -275,15 +264,6 @@ await Promise.all([
             </RouterLink>
           </div>
 
-          <div v-if="activeCategory && visibleCities.length" class="city-links">
-            <span class="city-links__label">Доступно также в:</span>
-            <RouterLink
-              v-for="city in visibleCities"
-              :key="city.slug"
-              :to="`/catalog/${activeCategory}/${city.slug}`"
-              class="city-chip"
-            >{{ city.name }}</RouterLink>
-          </div>
         </div>
       </div>
     </div>
@@ -747,35 +727,4 @@ await Promise.all([
 .help-btn:hover { background: #a96d0f; }
 .help-btn:active { transform: translateY(1px); }
 
-/* CITY LINKS */
-.city-links {
-  margin-top: var(--space-4);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-}
-
-.city-links__label {
-  font-size: 13px;
-  color: var(--color-text-muted);
-  flex-shrink: 0;
-}
-
-.city-chip {
-  display: inline-block;
-  padding: 4px 12px;
-  font-size: 13px;
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  color: var(--color-text);
-  text-decoration: none;
-  transition: border-color 0.15s, background 0.15s;
-}
-
-.city-chip:hover {
-  border-color: var(--color-primary);
-  background: rgba(31, 95, 191, 0.05);
-  color: var(--color-primary);
-}
 </style>

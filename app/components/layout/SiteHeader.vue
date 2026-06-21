@@ -4,13 +4,10 @@ import { RouterLink, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import AppContainer from '../ui/AppContainer.vue'
 import LanguageSwitcher from '../ui/LanguageSwitcher.vue'
-import CitySwitcher from './CitySwitcher.vue'
 import { useCartStore } from '@/stores/cart'
 import { useWishlistStore } from '@/stores/wishlist'
 import { useCompareStore } from '@/stores/compare'
 import { useCategoriesDataStore } from '@/stores/categoriesData'
-import { useCitiesDataStore } from '@/stores/citiesData'
-import { useSelectedCity } from '@/composables/useSelectedCity'
 
 interface NavItem {
   to: string
@@ -28,21 +25,16 @@ const cart = useCartStore()
 const wishlist = useWishlistStore()
 const compare = useCompareStore()
 const categoriesStore = useCategoriesDataStore()
-const citiesStore = useCitiesDataStore()
-const { selectedCity, selectedCitySlug } = useSelectedCity()
 
 onMounted(() => {
   categoriesStore.load()
-  citiesStore.load()
   const onScroll = () => { scrolled.value = window.scrollY > 12 }
   window.addEventListener('scroll', onScroll, { passive: true })
   onUnmounted(() => window.removeEventListener('scroll', onScroll))
 })
 
 function catLink(slug: string) {
-  return selectedCity.value
-    ? `/catalog/${slug}/${selectedCitySlug.value}`
-    : `/catalog/${slug}`
+  return `/catalog/${slug}`
 }
 
 const categoryNavItems = computed<NavItem[]>(() =>
@@ -83,7 +75,6 @@ const submitSearch = (e: Event) => {
     <div class="topbar">
       <AppContainer>
         <div class="topbar-row">
-          <CitySwitcher />
           <LanguageSwitcher />
           <a href="tel:+77752540351" class="phone">+7 775 254 03 51</a>
           <a href="mailto:info@medcoregroup.kz" class="email">info@medcoregroup.kz</a>
