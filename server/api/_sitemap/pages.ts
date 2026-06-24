@@ -1,6 +1,21 @@
 import { services } from '../../../app/data/services'
 
 const BACKEND_ORIGIN = process.env.NUXT_BACKEND_ORIGIN ?? 'http://localhost:3001'
+const ROUTED_CMS_PAGE_SLUGS = new Set(['open-clinic'])
+
+type CategorySitemapItem = {
+  slug?: string
+  children?: CategorySitemapItem[]
+}
+
+function collectCategorySlugs(categories: CategorySitemapItem[]): string[] {
+  const slugs: string[] = []
+  for (const cat of categories) {
+    if (cat.slug) slugs.push(cat.slug)
+    if (Array.isArray(cat.children)) slugs.push(...collectCategorySlugs(cat.children))
+  }
+  return slugs
+}
 
 export default defineEventHandler(async () => {
   const urls: { loc: string; changefreq?: string; priority?: number; lastmod?: string }[] = []
@@ -15,6 +30,7 @@ export default defineEventHandler(async () => {
     { loc: '/about', priority: 0.6, changefreq: 'monthly' },
     { loc: '/contacts', priority: 0.6, changefreq: 'monthly' },
     { loc: '/in-stock', priority: 0.8, changefreq: 'daily' },
+    { loc: '/privacy', priority: 0.3, changefreq: 'yearly' },
     { loc: '/open-clinic', priority: 0.7, changefreq: 'monthly' },
   )
 
@@ -26,17 +42,15 @@ export default defineEventHandler(async () => {
   // ── Dynamic pages — try backend, fall back gracefully ───────────────────
   try {
     const [catRes, pageRes] = await Promise.all([
-      $fetch<{ data?: { slug: string }[] }>(`${BACKEND_ORIGIN}/api/v1/categories`, { timeout: 5000 }),
+      $fetch<{ data?: CategorySitemapItem[] } | CategorySitemapItem[]>(`${BACKEND_ORIGIN}/api/v1/categories`, { timeout: 5000 }),
       $fetch<{ slug: string; isVisible: boolean }[]>(`${BACKEND_ORIGIN}/api/v1/pages`, { timeout: 5000 }).catch(() => []),
     ])
-    const cats = (Array.isArray(catRes) ? catRes : (catRes?.data ?? [])) as { slug: string }[]
+    const cats = (Array.isArray(catRes) ? catRes : (catRes?.data ?? [])) as CategorySitemapItem[]
     const pages = (Array.isArray(pageRes) ? pageRes : []) as { slug: string; isVisible: boolean }[]
-    const excludedPageSlugs = new Set(['privacy', 'cart', 'wishlist', 'compare', 'search'])
     const existingLocs = new Set(urls.map((url) => url.loc))
 
-    for (const cat of cats) {
-      if (!cat.slug) continue
-      const loc = `/catalog/${cat.slug.toLowerCase()}`
+    for (const slug of collectCategorySlugs(cats)) {
+      const loc = `/catalog/${slug.toLowerCase()}`
       if (!existingLocs.has(loc)) {
         urls.push({ loc, priority: 0.8, changefreq: 'weekly' })
         existingLocs.add(loc)
@@ -44,7 +58,7 @@ export default defineEventHandler(async () => {
     }
 
     for (const page of pages.filter((p) => p.isVisible)) {
-      if (!page.slug || excludedPageSlugs.has(page.slug)) continue
+      if (!page.slug || !ROUTED_CMS_PAGE_SLUGS.has(page.slug)) continue
       const loc = `/${page.slug}`
       if (existingLocs.has(loc)) continue
       urls.push({ loc, priority: 0.8, changefreq: 'monthly' })

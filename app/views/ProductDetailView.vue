@@ -168,6 +168,10 @@ await Promise.all([
   useAsyncData('productsData', () => productsStore.load()),
   useAsyncData('categoriesData', () => categoriesStore.load()),
 ])
+
+if (!product.value) {
+  throw createError({ statusCode: 404, statusMessage: 'Product not found' })
+}
 </script>
 
 <template>

@@ -20,7 +20,7 @@ await useAsyncData('servicesData', () => store.load())
 const service = computed(() => store.items.find((s) => s.slug === route.params.slug))
 
 if (!service.value) {
-  await navigateTo('/services', { redirectCode: 302 })
+  throw createError({ statusCode: 404, statusMessage: 'Service not found' })
 }
 
 useMeta({

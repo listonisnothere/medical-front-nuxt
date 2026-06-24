@@ -31,7 +31,7 @@ export default defineNuxtConfig({
   sitemap: {
     // Disable auto-discovery; all URLs are provided via sources below.
     autoDiscoverSources: false,
-    exclude: ['/cart', '/wishlist', '/compare', '/search', '/privacy', '/admin/**'],
+    exclude: ['/cart', '/wishlist', '/compare', '/search', '/admin/**'],
     sitemaps: {
       pages: {
         sources: ['/api/_sitemap/pages'],

@@ -116,6 +116,10 @@ useMeta({
 })
 
 await useAsyncData('publicationsData', () => store.load())
+
+if (!article.value) {
+  throw createError({ statusCode: 404, statusMessage: 'Article not found' })
+}
 </script>
 
 <template>

@@ -16,7 +16,7 @@ const filtersOpen = ref(false)
 const {
   activeCategory, activeBrand, searchQuery, sortBy,
   sorted, currentTitle, flatCategoryTree, activeFilters,
-  isDescendantActive, categoryProductCount, clearAllFilters, loading,
+  findCategoryBySlug, isDescendantActive, categoryProductCount, clearAllFilters, loading,
   productsStore, categoriesStore, brandsStore,
 } = useCatalogFilters()
 
@@ -90,6 +90,15 @@ await Promise.all([
   useAsyncData('categoriesData', () => categoriesStore.load()),
   useAsyncData('brandsData', () => brandsStore.load()),
 ])
+
+if (
+  activeCategory.value &&
+  activeCategory.value !== 'sale' &&
+  categoriesStore.items.length > 0 &&
+  !categoriesStore.items.some((cat: any) => findCategoryBySlug(activeCategory.value, [cat]))
+) {
+  throw createError({ statusCode: 404, statusMessage: 'Category not found' })
+}
 </script>
 
 <template>
