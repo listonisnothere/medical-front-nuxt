@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import api from '@/composables/useApi'
-import type { Service } from '@/data/services'
+import { services as fallback, type Service } from '@/data/services'
 
 export const useServicesDataStore = defineStore('servicesData', () => {
   const items = ref<Service[]>([])
@@ -13,9 +13,12 @@ export const useServicesDataStore = defineStore('servicesData', () => {
     loading.value = true
     try {
       const { data } = await api.get('/services')
-      items.value = Array.isArray(data) ? data : []
-      loaded.value = true
+      const list = Array.isArray(data) ? data : []
+      items.value = list.length ? list : fallback
+    } catch {
+      items.value = fallback
     } finally {
+      loaded.value = true
       loading.value = false
     }
   }
