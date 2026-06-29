@@ -6,6 +6,7 @@ import type { Product } from '@/data/products'
 import { useWishlistStore } from '@/stores/wishlist'
 import { useCartStore } from '@/stores/cart'
 import { useUiStore } from '@/stores/ui'
+import { trackGoogleAdsQuoteConversion } from '@/composables/useGoogleAds'
 
 const props = defineProps<{ product: Product }>()
 
@@ -123,6 +124,7 @@ function toggleCart() {
 }
 
 function openQuote() {
+  trackGoogleAdsQuoteConversion()
   ui.openQuote(props.product)
 }
 </script>

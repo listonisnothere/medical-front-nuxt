@@ -14,6 +14,7 @@ import { useCompareStore } from '@/stores/compare'
 import { useCartStore } from '@/stores/cart'
 import { useUiStore } from '@/stores/ui'
 import { useMeta, buildProductTitle } from '@/composables/useMeta'
+import { trackGoogleAdsQuoteConversion } from '@/composables/useGoogleAds'
 
 const route = useRoute()
 const { t } = useI18n()
@@ -25,6 +26,12 @@ const productsStore = useProductsDataStore()
 const categoriesStore = useCategoriesDataStore()
 
 const product = computed(() => productsStore.items.find((p) => p.id === route.params.id))
+
+function openProductQuote() {
+  if (!product.value) return
+  trackGoogleAdsQuoteConversion()
+  ui.openQuote(product.value)
+}
 
 const category = computed(() => {
   if (!product.value) return null
@@ -238,7 +245,7 @@ if (!product.value) {
         </div>
 
         <div class="actions">
-          <BaseButton variant="primary" size="lg" @click="ui.openQuote(product)">
+          <BaseButton variant="primary" size="lg" @click="openProductQuote">
             {{ $t('product.requestQuote') }}
           </BaseButton>
           <BaseButton variant="outline" size="lg" @click="cart.toggle(product.id)">

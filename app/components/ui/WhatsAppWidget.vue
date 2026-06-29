@@ -1,11 +1,22 @@
+<script setup lang="ts">
+import { trackGoogleAdsWhatsAppConversion } from '@/composables/useGoogleAds'
+
+const whatsappUrl = 'https://wa.me/77752540351'
+
+function onWhatsAppClick() {
+  trackGoogleAdsWhatsAppConversion(whatsappUrl)
+}
+</script>
+
 <template>
   <a
     class="whatsapp-widget"
-    href="https://wa.me/77752540351"
+    :href="whatsappUrl"
     target="_blank"
     rel="noopener noreferrer"
     aria-label="Написать в WhatsApp"
     title="Написать в WhatsApp"
+    @click.prevent="onWhatsAppClick"
   >
     <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
       <path
